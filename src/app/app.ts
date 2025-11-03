@@ -1,19 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Header } from './core/components/header/header';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [RouterOutlet, Header],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
-  constructor(private httpClient: HttpClient) {}
-
-  ngOnInit() {
-    this.httpClient.get('http://localhost:3000/purchaseOrders').subscribe((data) => {
-      console.log(data);
-    });
-  }
-}
+export class App {}

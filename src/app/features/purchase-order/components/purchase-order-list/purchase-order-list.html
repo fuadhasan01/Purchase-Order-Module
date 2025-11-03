@@ -1,0 +1,65 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Purchase Orders</h2>
+    <button class="btn btn-primary" routerLink="/purchase-orders/create">
+      Create Purchase Order
+    </button>
+  </div>
+
+  <!-- <div class="row mb-3">
+    <div class="col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search by PO Number, Supplier, Warehouse"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+      />
+    </div>
+    <div class="col-md-3">
+      <select class="form-select" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+        <option value="">All Statuses</option>
+        <option value="Draft">Draft</option>
+        <option value="Approved">Approved</option>
+        <option value="Received">Received</option>
+      </select>
+    </div>
+    <div class="col-md-5">
+      <ngx-daterangepicker-material
+        [(ngModel)]="dateRange"
+        (ngModelChange)="onDateRangeChange()"
+        [locale]="{ format: 'MM/DD/YYYY' }"
+        placeholder="Select Date Range"
+      ></ngx-daterangepicker-material>
+    </div>
+  </div> -->
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>PO Number</th>
+        <th>Supplier</th>
+        <th>Warehouse</th>
+        <th>Order Date</th>
+        <th>Total Amount</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of purchaseOrders">
+        <td>{{ order.poNumber }}</td>
+        <td>{{ order.supplierId }}</td>
+        <td>{{ order.warehouseId }}</td>
+        <td>{{ order.orderDate | date : 'MM/dd/yyyy' }}</td>
+        <td>{{ order.totalAmount | currency }}</td>
+        <td>{{ order.status }}</td>
+        <td>
+          <button class="btn btn-sm btn-info me-1" type="button" title="View">View</button>
+          <button type="button" class="btn btn-sm btn-warning me-1" title="Edit">Edit</button>
+          <button type="button" class="btn btn-sm btn-danger" title="Delete">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
