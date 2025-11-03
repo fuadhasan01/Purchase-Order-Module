@@ -1,0 +1,29 @@
+{
+  "purchaseOrders": [
+    {
+      "id": 1,
+      "poNumber": "PO-001",
+      "supplierId": 1,
+      "warehouseId": 1,
+      "orderDate": "2025-11-03",
+      "totalAmount": 1200,
+      "status": "Draft"
+    }
+  ],
+  "suppliers": [
+    { "id": 1, "name": "ABC Supplier" },
+    { "id": 2, "name": "XYZ Supplier" }
+  ],
+  "warehouses": [
+    { "id": 1, "name": "Main Warehouse" },
+    { "id": 2, "name": "Branch Warehouse" }
+  ],
+  "products": [
+    { "id": 1, "name": "Product A", "price": 100 },
+    { "id": 2, "name": "Product B", "price": 200 }
+  ],
+  "vatRates": [
+    { "id": 1, "rate": 5 },
+    { "id": 2, "rate": 10 }
+  ]
+}
