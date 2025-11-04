@@ -7,7 +7,7 @@ import { VatRateModel } from '../../models/vat-rate.model';
 import { CommonModule } from '@angular/common';
 import { PurchaseOrderService } from '../../services/purchase-order.service';
 import { Observable, Subject, take } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-purchase-order-create',
@@ -24,10 +24,13 @@ export class PurchaseOrderCreateComponent implements OnInit {
   vatRates$!: Observable<VatRateModel[]>;
   vatRatesAmount = new Subject<number>();
 
+  isEditMode = false;
+  purchaseOrderId: string | null = null;
   constructor(
     private fb: FormBuilder,
     private purchaseOrderService: PurchaseOrderService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -39,12 +42,24 @@ export class PurchaseOrderCreateComponent implements OnInit {
       warehouseId: [null, Validators.required],
       shippingAddress: ['', Validators.required],
       vatRateId: [null, Validators.required],
-      orderDate: [new Date().toISOString().substring(0, 10), Validators.required],
+      orderDate: [new Date(), Validators.required],
       items: this.fb.array([], Validators.required),
       memoNotes: [''],
       attachmentFileName: [''],
     });
-    this.addItem(); // add one initial item
+
+    // Check for Edit Mode first
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('id');
+      if (id) {
+        this.isEditMode = true;
+        this.purchaseOrderId = id;
+        this.loadPurchaseOrder(id);
+      } else {
+        // Only add default item if NOT edit mode
+        this.addItem();
+      }
+    });
   }
   loadData(): void {
     this.suppliers$ = this.purchaseOrderService.getSuppliers();
@@ -101,6 +116,50 @@ export class PurchaseOrderCreateComponent implements OnInit {
     return this.subTotal + this.vatAmount;
   }
 
+  // 🟩 Load existing PO data for edit
+  loadPurchaseOrder(id: string): void {
+    this.purchaseOrderService
+      .getPurchaseOrderById(id)
+      .pipe(take(1))
+      .subscribe({
+        next: (po) => {
+          if (!po) return;
+
+          this.purchaseOrderForm.patchValue({
+            purchaseOrderNumber: po.poNumber,
+            supplierId: po.supplierId,
+            warehouseId: po.warehouseId,
+            shippingAddress: po.shippingAddress,
+            vatRateId: po.vatRateId,
+            orderDate: new Date(po.orderDate),
+            memoNotes: po.memoNotes,
+            // attachmentFileName: po.attachmentFileName,
+          });
+
+          // Clear existing items
+          this.items.clear();
+          console.log('Loaded PO for edit:', po);
+          // Patch items
+          po.items.forEach((item: any) => {
+            const group = this.fb.group({
+              productId: [item.productId, Validators.required],
+              quantity: [item.quantity, [Validators.required, Validators.min(1)]],
+              unitPrice: [item.unitPrice, [Validators.required, Validators.min(0.01)]],
+              lineTotal: [{ value: item.quantity * item.unitPrice, disabled: true }],
+            });
+
+            group.valueChanges.subscribe((val) => {
+              const total = (val.quantity || 0) * (val.unitPrice || 0);
+              group.get('lineTotal')?.setValue(total, { emitEvent: false });
+            });
+
+            this.items.push(group);
+          });
+        },
+        error: (err) => console.error('Error loading PO for edit:', err),
+      });
+  }
+
   onSubmit(): void {
     if (this.purchaseOrderForm.invalid) {
       this.purchaseOrderForm.markAllAsTouched();
@@ -108,9 +167,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
     }
 
     const formValue = this.purchaseOrderForm.getRawValue();
-
-    // Build the data object to send
-    const newPurchaseOrder = {
+    const purchaseOrderData = {
       poNumber: formValue.purchaseOrderNumber,
       supplierId: formValue.supplierId,
       warehouseId: formValue.warehouseId,
@@ -124,22 +181,39 @@ export class PurchaseOrderCreateComponent implements OnInit {
       status: 'Draft',
     };
 
-    this.purchaseOrderService
-      .createPurchaseOrder(newPurchaseOrder)
-      .pipe(take(1))
-      .subscribe({
-        next: (res) => {
-          console.log('Purchase Order saved:', res);
-          alert('Purchase Order saved successfully!');
-          this.purchaseOrderForm.reset();
-          this.items.clear();
-          this.addItem();
-        },
-        error: (err) => {
-          console.error('Error saving purchase order:', err);
-          alert('Failed to save Purchase Order. Please try again.');
-        },
-      });
+    if (this.isEditMode && this.purchaseOrderId) {
+      // 🟨 Update existing PO
+      this.purchaseOrderService
+        .updatePurchaseOrder(this.purchaseOrderId, purchaseOrderData)
+        .pipe(take(1))
+        .subscribe({
+          next: () => {
+            alert('Purchase Order updated successfully!');
+            this.router.navigate(['/poList']);
+          },
+          error: (err) => {
+            console.error('Error updating PO:', err);
+            alert('Failed to update Purchase Order.');
+          },
+        });
+    } else {
+      // 🟩 Create new PO
+      this.purchaseOrderService
+        .createPurchaseOrder(purchaseOrderData)
+        .pipe(take(1))
+        .subscribe({
+          next: () => {
+            alert('Purchase Order created successfully!');
+            this.purchaseOrderForm.reset();
+            this.items.clear();
+            this.addItem();
+          },
+          error: (err) => {
+            console.error('Error creating PO:', err);
+            alert('Failed to create Purchase Order.');
+          },
+        });
+    }
   }
   onCancel(): void {
     this.router.navigate(['/poList']);

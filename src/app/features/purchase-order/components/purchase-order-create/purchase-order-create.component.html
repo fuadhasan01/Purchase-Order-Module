@@ -68,9 +68,20 @@
     </div>
 
     <!-- Order Date -->
-    <div class="mb-3">
+    <!-- <div class="mb-3">
       <label>Order Date</label>
       <input type="date" class="form-control" formControlName="orderDate" />
+    </div> -->
+    <div class="mb-3">
+      <label>Order Date</label>
+      <input
+        type="text"
+        class="form-control"
+        [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+        bsDatepicker
+        formControlName="orderDate"
+        placeholder="Select order date"
+      />
     </div>
 
     <!-- Items Section -->

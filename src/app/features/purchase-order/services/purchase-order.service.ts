@@ -31,8 +31,15 @@ export class PurchaseOrderService {
   getVatRates(): Observable<VatRateModel[]> {
     return this.httpClient.get<VatRateModel[]>('http://localhost:3000/vatRates');
   }
+  getPurchaseOrderById(id: string): Observable<PurchaseOrderModel> {
+    return this.httpClient.get<PurchaseOrderModel>(`${this.apiUrl}/${id}`);
+  }
 
-  deletePurchaseOrder(id: number): Observable<any> {
+  updatePurchaseOrder(id: string, poData: any): Observable<any> {
+    return this.httpClient.put(`${this.apiUrl}/${id}`, poData);
+  }
+
+  deletePurchaseOrder(id: string): Observable<any> {
     return this.httpClient.delete(`${this.apiUrl}/${id}`);
   }
 }

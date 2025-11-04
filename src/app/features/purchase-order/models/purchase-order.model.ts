@@ -1,5 +1,5 @@
 export interface PurchaseOrderModel {
-  id: number;
+  id: string;
   poNumber: string;
   supplierId: number;
   warehouseId: number;

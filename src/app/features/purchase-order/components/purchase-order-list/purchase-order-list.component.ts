@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PurchaseOrderModel } from '../../models/purchase-order.model';
-import { Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { PurchaseOrderService } from '../../services/purchase-order.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { PurchaseOrderService } from '../../services/purchase-order.service';
 })
 export class PurchaseOrderListComponent implements OnInit {
   Math = Math; // Expose Math to template
-  purchaseOrders$: Observable<PurchaseOrderModel[]> = of([]);
+  purchaseOrders$: Observable<PurchaseOrderModel[]>;
   allPurchaseOrders: PurchaseOrderModel[] = [];
 
   searchTerm: string = '';
@@ -144,8 +144,11 @@ export class PurchaseOrderListComponent implements OnInit {
     this.currentPage = 1;
     this.applyFilters();
   }
+  editPo(poId: string): void {
+    this.router.navigate(['/poEdit', poId]);
+  }
 
-  deletePo(poId: number): void {
+  deletePo(poId: string): void {
     if (confirm('Are you sure you want to delete this Purchase Order?')) {
       this.purchaseOrderService.deletePurchaseOrder(poId).subscribe(() => {
         alert('Purchase Order deleted successfully.');

@@ -11,6 +11,7 @@ import { PurchaseOrderCreateComponent } from './components/purchase-order-create
 const routes: Routes = [
   { path: 'poList', component: PurchaseOrderListComponent },
   { path: 'poCreate', component: PurchaseOrderCreateComponent },
+  { path: 'poEdit/:id', component: PurchaseOrderCreateComponent },
 ];
 
 @NgModule({
