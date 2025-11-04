@@ -1,0 +1,153 @@
+<div class="container mt-3 mb-5">
+  <h3>Create Purchase Order</h3>
+
+  <form [formGroup]="purchaseOrderForm" (ngSubmit)="onSubmit()">
+    <!-- Purchase Order Number -->
+    <div class="mb-3">
+      <label>Purchase Order Number</label>
+      <input type="text" class="form-control" formControlName="purchaseOrderNumber" />
+      @if (purchaseOrderForm.get('purchaseOrderNumber')?.invalid &&
+      purchaseOrderForm.get('purchaseOrderNumber')?.touched) {
+      <div class="text-danger">Purchase Order Number is required.</div>
+      }
+    </div>
+
+    <!-- Supplier -->
+    <div class="mb-3">
+      <label>Supplier</label>
+      <select class="form-control" formControlName="supplierId">
+        <option value="">Select Supplier</option>
+        @for (supplier of suppliers$ | async; track supplier.supplierId) {
+        <option [value]="supplier.supplierId">{{ supplier.supplierName }}</option>
+        }
+      </select>
+      @if (purchaseOrderForm.get('supplierId')?.invalid &&
+      purchaseOrderForm.get('supplierId')?.touched) {
+      <div class="text-danger">Supplier is required.</div>
+      }
+    </div>
+
+    <!-- Warehouse -->
+    <div class="mb-3">
+      <label>Warehouse</label>
+      <select class="form-control" formControlName="warehouseId">
+        <option value="">Select Warehouse</option>
+        @for (warehouse of warehouses$ | async; track warehouse.warehouseId) {
+        <option [value]="warehouse.warehouseId">{{ warehouse.warehouseName }}</option>
+        }
+      </select>
+      @if (purchaseOrderForm.get('warehouseId')?.invalid &&
+      purchaseOrderForm.get('warehouseId')?.touched) {
+      <div class="text-danger">Warehouse is required.</div>
+      }
+    </div>
+
+    <!-- Shipping Address -->
+    <div class="mb-3">
+      <label>Shipping Address</label>
+      <textarea class="form-control" formControlName="shippingAddress"></textarea>
+      @if (purchaseOrderForm.get('shippingAddress')?.invalid &&
+      purchaseOrderForm.get('shippingAddress')?.touched) {
+      <div class="text-danger">Shipping Address is required.</div>
+      }
+    </div>
+
+    <!-- VAT Rate -->
+    <div class="mb-3">
+      <label>VAT Rate</label>
+      <select class="form-control" formControlName="vatRateId">
+        <option value="">Select VAT</option>
+        @for (vat of vatRates$ | async; track vat.vatRateId) {
+        <option [value]="vat.vatRateId">{{ vat.vatPercentage }}%</option>
+        }
+      </select>
+      @if (purchaseOrderForm.get('vatRateId')?.invalid &&
+      purchaseOrderForm.get('vatRateId')?.touched) {
+      <div class="text-danger">VAT Rate is required.</div>
+      }
+    </div>
+
+    <!-- Order Date -->
+    <div class="mb-3">
+      <label>Order Date</label>
+      <input type="date" class="form-control" formControlName="orderDate" />
+    </div>
+
+    <!-- Items Section -->
+    <h5>Items</h5>
+    <div formArrayName="items" class="mb-3">
+      @for (item of items.controls; let i = $index; track i) {
+      <div [formGroupName]="i" class="border p-2 mb-2">
+        <div class="row g-2">
+          <!-- Product -->
+          <div class="col">
+            <label>Product</label>
+            <select class="form-control" formControlName="productId">
+              <option value="">Select Product</option>
+              @for (product of products$ | async; track product.productId) {
+              <option [value]="product.productId">{{ product.productName }}</option>
+              }
+            </select>
+            @if (item.get('productId')?.invalid && item.get('productId')?.touched) {
+            <div class="text-danger">Product is required.</div>
+            }
+          </div>
+
+          <!-- Quantity -->
+          <div class="col">
+            <label>Quantity</label>
+            <input type="number" class="form-control" formControlName="quantity" />
+            @if (item.get('quantity')?.invalid && item.get('quantity')?.touched) {
+            <div class="text-danger">Quantity must be at least 1.</div>
+            }
+          </div>
+
+          <!-- Unit Price -->
+          <div class="col">
+            <label>Unit Price</label>
+            <input type="number" class="form-control" formControlName="unitPrice" />
+            @if (item.get('unitPrice')?.invalid && item.get('unitPrice')?.touched) {
+            <div class="text-danger">Unit Price must be greater than 0.</div>
+            }
+          </div>
+
+          <!-- Line Total -->
+          <div class="col">
+            <label>Line Total</label>
+            <input type="number" class="form-control" formControlName="lineTotal" readonly />
+          </div>
+
+          <!-- Remove Button -->
+          <div class="col-1 d-flex align-items-end">
+            <button type="button" class="btn btn-danger btn-sm" (click)="removeItem(i)">X</button>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+
+    <button type="button" class="btn btn-secondary mb-3" (click)="addItem()">Add Item</button>
+
+    <!-- Summary -->
+    <h5>Summary</h5>
+    <p>Sub Total: {{ subTotal | number : '1.2-2' }}</p>
+    <p>VAT: {{ vatAmount | number : '1.2-2' }}</p>
+    <p>Grand Total: {{ grandTotal | number : '1.2-2' }}</p>
+
+    <!-- Memo / Notes -->
+    <div class="mb-3">
+      <label>Memo / Notes</label>
+      <textarea class="form-control" formControlName="memoNotes"></textarea>
+    </div>
+
+    <!-- Attachment -->
+    <div class="mb-3">
+      <label>Attachment (optional)</label>
+      <input type="file" class="form-control" formControlName="attachmentFileName" />
+    </div>
+
+    <!-- Buttons -->
+    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="button" class="btn btn-secondary ms-2" (click)="onCancel()">Cancel</button>
+  </form>
+</div>

@@ -1,29 +1,183 @@
 {
   "purchaseOrders": [
     {
-      "id": 1,
+      "id": "1",
       "poNumber": "PO-001",
       "supplierId": 1,
       "warehouseId": 1,
       "orderDate": "2025-11-03",
       "totalAmount": 1200,
       "status": "Draft"
+    },
+    {
+      "id": "8313",
+      "poNumber": "PO-002",
+      "supplierId": "1",
+      "warehouseId": "2",
+      "shippingAddress": "Dhaka",
+      "vatRateId": "2",
+      "orderDate": "2025-11-04",
+      "items": [
+        {
+          "productId": "1",
+          "quantity": 1000,
+          "unitPrice": 200,
+          "lineTotal": 200000
+        }
+      ],
+      "memoNotes": "Test Notes",
+      "attachmentFileName": "C:\\fakepath\\Angular Developer Assessment - Purchase Order Module.pdf",
+      "totalAmount": 220000,
+      "status": "Draft"
+    },
+    {
+      "id": "3",
+      "poNumber": "PO-003",
+      "supplierId": 2,
+      "warehouseId": 1,
+      "orderDate": "2025-11-01",
+      "totalAmount": 5000,
+      "status": "Pending"
+    },
+    {
+      "id": "4",
+      "poNumber": "PO-004",
+      "supplierId": 1,
+      "warehouseId": 2,
+      "orderDate": "2025-10-28",
+      "totalAmount": 3500,
+      "status": "Approved"
+    },
+    {
+      "id": "5",
+      "poNumber": "PO-005",
+      "supplierId": 2,
+      "warehouseId": 1,
+      "orderDate": "2025-11-02",
+      "totalAmount": 7600,
+      "status": "Draft"
+    },
+    {
+      "id": "6",
+      "poNumber": "PO-006",
+      "supplierId": 1,
+      "warehouseId": 1,
+      "orderDate": "2025-10-30",
+      "totalAmount": 15000,
+      "status": "Approved"
+    },
+    {
+      "id": "7",
+      "poNumber": "PO-007",
+      "supplierId": 2,
+      "warehouseId": 2,
+      "orderDate": "2025-10-25",
+      "totalAmount": 9800,
+      "status": "Received"
+    },
+    {
+      "id": "8",
+      "poNumber": "PO-008",
+      "supplierId": 1,
+      "warehouseId": 2,
+      "orderDate": "2025-11-04",
+      "totalAmount": 12300,
+      "status": "Draft"
+    },
+    {
+      "id": "9",
+      "poNumber": "PO-009",
+      "supplierId": 2,
+      "warehouseId": 1,
+      "orderDate": "2025-11-03",
+      "totalAmount": 6400,
+      "status": "Pending"
+    },
+    {
+      "id": "10",
+      "poNumber": "PO-010",
+      "supplierId": 1,
+      "warehouseId": 1,
+      "orderDate": "2025-10-29",
+      "totalAmount": 8900,
+      "status": "Approved"
+    },
+    {
+      "id": "70b6",
+      "poNumber": "PO-011",
+      "supplierId": "2",
+      "warehouseId": "1",
+      "shippingAddress": "Dhaka",
+      "vatRateId": "2",
+      "orderDate": "2025-11-04",
+      "items": [
+        {
+          "productId": "1",
+          "quantity": 2,
+          "unitPrice": 100,
+          "lineTotal": 200
+        },
+        {
+          "productId": "2",
+          "quantity": 3,
+          "unitPrice": 200,
+          "lineTotal": 600
+        }
+      ],
+      "memoNotes": "Test",
+      "attachmentFileName": "C:\\fakepath\\organized.pdf",
+      "totalAmount": 880,
+      "status": "Draft"
     }
   ],
   "suppliers": [
-    { "id": 1, "name": "ABC Supplier" },
-    { "id": 2, "name": "XYZ Supplier" }
+    {
+      "supplierId": 1,
+      "supplierName": "ABC Supplier",
+      "id": "9fbe"
+    },
+    {
+      "supplierId": 2,
+      "supplierName": "XYZ Supplier",
+      "id": "60b3"
+    }
   ],
   "warehouses": [
-    { "id": 1, "name": "Main Warehouse" },
-    { "id": 2, "name": "Branch Warehouse" }
+    {
+      "warehouseId": 1,
+      "warehouseName": "Main Warehouse",
+      "id": "9b6c"
+    },
+    {
+      "warehouseId": 2,
+      "warehouseName": "Branch Warehouse",
+      "id": "ca19"
+    }
   ],
   "products": [
-    { "id": 1, "name": "Product A", "price": 100 },
-    { "id": 2, "name": "Product B", "price": 200 }
+    {
+      "productId": 1,
+      "productName": "Product A",
+      "price": 100,
+      "id": "bd0c"
+    },
+    {
+      "productId": 2,
+      "productName": "Product B",
+      "price": 200,
+      "id": "95e6"
+    }
   ],
   "vatRates": [
-    { "id": 1, "rate": 5 },
-    { "id": 2, "rate": 10 }
+    {
+      "vatRateId": 1,
+      "vatPercentage": 5,
+      "id": "486a"
+    },
+    {
+      "vatRateId": 2,
+      "vatPercentage": 10,
+      "id": "cb0c"
+    }
   ]
 }

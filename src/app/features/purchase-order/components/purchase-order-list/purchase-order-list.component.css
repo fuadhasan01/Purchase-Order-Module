@@ -1,0 +1,21 @@
+/* Fix datepicker popup visibility */
+.bs-datepicker-container,
+.theme-green .bs-datepicker-container,
+.theme-blue .bs-datepicker-container {
+  z-index: 1060 !important; /* ensures it's above tables/modals */
+  background-color: #fff !important;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Make the input clearly visible */
+input[bsDaterangepicker] {
+  background-color: #fff !important;
+  cursor: pointer;
+}
+
+/* Prevent clipping if datepicker is inside a Bootstrap row or card */
+.row,
+.filter-bar {
+  overflow: visible !important;
+}

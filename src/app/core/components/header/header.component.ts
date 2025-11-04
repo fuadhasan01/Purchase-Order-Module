@@ -4,12 +4,11 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  standalone: true,
-  imports: [NgClass, RouterModule],
-  templateUrl: './header.html',
-  styleUrls: ['./header.css'],
+  standalone: false,
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.css'],
 })
-export class Header {
+export class HeaderComponent {
   isActive(route: string): boolean {
     return window.location.pathname === route;
   }
