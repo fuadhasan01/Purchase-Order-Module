@@ -68,14 +68,15 @@ export class PurchaseOrderListComponent implements OnInit {
   // combined filtering logic
   renderList(): void {
     let filtered = [...this.allPurchaseOrders];
-    let list = this.applySearch(filtered);
-    list = this.applyStatusFilter(list);
-    list = this.applyDateFilter(list);
-    list = this.applySorting(list);
-    this.totalItems = filtered.length;
-    list = this.applyPagination(list);
+    filtered = this.applySearch(filtered);
+    filtered = this.applyStatusFilter(filtered);
+    filtered = this.applyDateFilter(filtered);
+    filtered = this.applySorting(filtered);
 
-    this.purchaseOrders$ = of(list);
+    this.totalItems = filtered.length;
+
+    const paged = this.applyPagination(filtered);
+    this.purchaseOrders$ = of(paged);
   }
 
   // search filter method
