@@ -1,123 +1,209 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Purchase Orders</h2>
-    <button class="btn btn-primary" (click)="goToPoCreate()">Create Purchase Order</button>
+<div class="container py-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary mb-0">
+      <i class="bi bi-receipt-cutoff me-2"></i> Purchase Orders
+    </h2>
+    <button class="btn btn-primary shadow-sm" (click)="goToPoCreate()">
+      <i class="bi bi-plus-lg me-1"></i> Create Purchase Order
+    </button>
   </div>
 
-  <!-- Filters Toolbar -->
-  <div class="row mb-3 align-items-end g-2">
-    <!-- Search -->
-    <div class="col-md-4">
-      <label class="form-label fw-semibold">Search</label>
-      <input
-        type="text"
-        class="form-control"
-        placeholder="PO Number, Supplier, Warehouse"
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="onSearchChange()"
-      />
-    </div>
+  <!-- Filters Section -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <!-- Search -->
+        <div class="col-md-4">
+          <label class="form-label fw-semibold text-secondary">Search</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="PO Number, Supplier, Warehouse"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="onSearchChange()"
+            />
+          </div>
+        </div>
 
-    <!-- Status Filter -->
-    <div class="col-md-3">
-      <label class="form-label fw-semibold">Status</label>
-      <select class="form-select" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
-        <option value="">All Statuses</option>
-        <option value="Draft">Draft</option>
-        <option value="Approved">Approved</option>
-        <option value="Received">Received</option>
-      </select>
-    </div>
+        <!-- Status Filter -->
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-secondary">Status</label>
+          <select class="form-select" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+            <option value="">All Statuses</option>
+            <option value="Draft">Draft</option>
+            <option value="Approved">Approved</option>
+            <option value="Received">Received</option>
+          </select>
+        </div>
 
-    <!-- Date Range -->
-    <div class="col-md-4">
-      <label class="form-label fw-semibold">Date Range</label>
-      <div class="input-group">
-        <span class="input-group-text">
-          <i class="bi bi-calendar-range"></i>
-        </span>
-        <input
-          type="text"
-          class="form-control"
-          bsDaterangepicker
-          placeholder="Select Date Range"
-          [(ngModel)]="dateRange"
-          (bsValueChange)="onDateRangeChange($event)"
-          [bsConfig]="{ containerClass: 'theme-blue' }"
-        />
+        <!-- Date Range -->
+        <div class="col-md-4">
+          <label class="form-label fw-semibold text-secondary">Date Range</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="bi bi-calendar-range"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control"
+              bsDaterangepicker
+              placeholder="Select Date Range"
+              [(ngModel)]="dateRange"
+              (bsValueChange)="onDateRangeChange($event)"
+              [bsConfig]="{ containerClass: 'theme-blue' }"
+            />
+          </div>
+        </div>
+
+        <!-- Clear Filters -->
+        <div class="col-md-1 text-end">
+          <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">
+            <i class="bi bi-x-circle"></i>
+          </button>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Clear Filters Button -->
-    <div class="col-md-1 text-end">
-      <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">Clear</button>
+  <!-- Table Section -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table
+          class="table table-hover align-middle mb-0"
+          *ngIf="purchaseOrders$ | async as purchaseOrders; else loading"
+        >
+          <thead class="table-light">
+            <tr>
+              <th (click)="onSort('poNumber')" style="cursor: pointer">
+                PO Number
+                <i
+                  *ngIf="sortColumn === 'poNumber'"
+                  [ngClass]="{
+                    'bi bi-caret-up-fill': sortDirection === 'asc',
+                    'bi bi-caret-down-fill': sortDirection === 'desc'
+                  }"
+                ></i>
+              </th>
+              <th (click)="onSort('supplierId')" style="cursor: pointer">
+                Supplier
+                <i
+                  *ngIf="sortColumn === 'supplierId'"
+                  [ngClass]="{
+                    'bi bi-caret-up-fill': sortDirection === 'asc',
+                    'bi bi-caret-down-fill': sortDirection === 'desc'
+                  }"
+                ></i>
+              </th>
+              <th (click)="onSort('warehouseId')" style="cursor: pointer">
+                Warehouse
+                <i
+                  *ngIf="sortColumn === 'warehouseId'"
+                  [ngClass]="{
+                    'bi bi-caret-up-fill': sortDirection === 'asc',
+                    'bi bi-caret-down-fill': sortDirection === 'desc'
+                  }"
+                ></i>
+              </th>
+              <th (click)="onSort('orderDate')" style="cursor: pointer">
+                Order Date
+                <i
+                  *ngIf="sortColumn === 'orderDate'"
+                  [ngClass]="{
+                    'bi bi-caret-up-fill': sortDirection === 'asc',
+                    'bi bi-caret-down-fill': sortDirection === 'desc'
+                  }"
+                ></i>
+              </th>
+              <th (click)="onSort('totalAmount')" style="cursor: pointer">
+                Total Amount
+                <i
+                  *ngIf="sortColumn === 'totalAmount'"
+                  [ngClass]="{
+                    'bi bi-caret-up-fill': sortDirection === 'asc',
+                    'bi bi-caret-down-fill': sortDirection === 'desc'
+                  }"
+                ></i>
+              </th>
+              <th (click)="onSort('status')" style="cursor: pointer">
+                Status
+                <i
+                  *ngIf="sortColumn === 'status'"
+                  [ngClass]="{
+                    'bi bi-caret-up-fill': sortDirection === 'asc',
+                    'bi bi-caret-down-fill': sortDirection === 'desc'
+                  }"
+                ></i>
+              </th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let po of purchaseOrders">
+              <td class="fw-semibold text-primary">{{ po.poNumber }}</td>
+              <td>{{ po.supplierName }}</td>
+              <td>{{ po.warehouseName }}</td>
+              <td>{{ po.orderDate | date : 'mediumDate' }}</td>
+              <td>{{ po.totalAmount | currency }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-secondary': po.status === 'Draft',
+                    'bg-success': po.status === 'Approved',
+                    'bg-info': po.status === 'Received',
+                    'bg-warning':
+                      po.status !== 'Draft' && po.status !== 'Approved' && po.status !== 'Received'
+                  }"
+                  >{{ po.status }}</span
+                >
+              </td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-outline-info me-1">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-warning me-1" (click)="editPo(po.id)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="deletePo(po.id)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="purchaseOrders.length === 0">
+              <td colspan="7" class="text-center text-muted py-4">
+                <i class="bi bi-inbox me-2"></i> No purchase orders found.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="border-top p-3 d-flex justify-content-center">
+        <pagination
+          [totalItems]="totalItems"
+          [(ngModel)]="currentPage"
+          [itemsPerPage]="pageSize"
+          (pageChanged)="onPageChange($event.page)"
+          [maxSize]="5"
+          [boundaryLinks]="true"
+          class="justify-content-center"
+        ></pagination>
+      </div>
     </div>
   </div>
 
-  <!-- Table -->
-  <table
-    class="table table-bordered table-striped"
-    *ngIf="purchaseOrders$ | async as purchaseOrders; else loading"
-  >
-    <thead>
-      <tr>
-        <th (click)="onSort('poNumber')" style="cursor: pointer">
-          PO Number <span *ngIf="sortColumn === 'poNumber'">({{ sortDirection }})</span>
-        </th>
-        <th (click)="onSort('supplierId')" style="cursor: pointer">
-          Supplier <span *ngIf="sortColumn === 'supplierId'">({{ sortDirection }})</span>
-        </th>
-        <th (click)="onSort('warehouseId')" style="cursor: pointer">
-          Warehouse <span *ngIf="sortColumn === 'warehouseId'">({{ sortDirection }})</span>
-        </th>
-        <th (click)="onSort('orderDate')" style="cursor: pointer">
-          Order Date <span *ngIf="sortColumn === 'orderDate'">({{ sortDirection }})</span>
-        </th>
-        <th (click)="onSort('totalAmount')" style="cursor: pointer">
-          Total Amount <span *ngIf="sortColumn === 'totalAmount'">({{ sortDirection }})</span>
-        </th>
-        <th (click)="onSort('status')" style="cursor: pointer">
-          Status <span *ngIf="sortColumn === 'status'">({{ sortDirection }})</span>
-        </th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let po of purchaseOrders">
-        <td>{{ po.poNumber }}</td>
-        <td>{{ po.supplierName }}</td>
-        <td>{{ po.warehouseName }}</td>
-        <td>{{ po.orderDate }}</td>
-        <td>{{ po.totalAmount | number : '1.2-2' }}</td>
-        <td>{{ po.status }}</td>
-        <td>
-          <button class="btn btn-sm btn-info me-1">View</button>
-          <button class="btn btn-sm btn-warning me-1" (click)="editPo(po.id)">Edit</button>
-          <button class="btn btn-sm btn-danger" (click)="deletePo(po.id)">Delete</button>
-        </td>
-      </tr>
-
-      <tr *ngIf="purchaseOrders.length === 0">
-        <td colspan="7" class="text-center text-muted">No purchase orders found.</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <pagination
-    [totalItems]="totalItems"
-    [(ngModel)]="currentPage"
-    [itemsPerPage]="pageSize"
-    (pageChanged)="onPageChange($event.page)"
-    [maxSize]="5"
-    [boundaryLinks]="true"
-    class="justify-content-center"
-  ></pagination>
+  <!-- Loading Spinner -->
   <ng-template #loading>
     <div class="text-center my-5">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2 text-muted">Loading purchase orders...</p>
     </div>
   </ng-template>
 </div>

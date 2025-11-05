@@ -188,6 +188,33 @@
       "attachmentFileName": "C:\\fakepath\\Angular-Setup.txt",
       "totalAmount": 1050,
       "status": "Draft"
+    },
+    {
+      "id": "7055",
+      "poNumber": "Po-50",
+      "supplierId": "1",
+      "warehouseId": "1",
+      "shippingAddress": "India",
+      "vatRateId": "2",
+      "orderDate": "2025-11-06T17:09:21.000Z",
+      "items": [
+        {
+          "productId": "1",
+          "quantity": 2,
+          "unitPrice": 500,
+          "lineTotal": 1000
+        },
+        {
+          "productId": "2",
+          "quantity": 8,
+          "unitPrice": 600,
+          "lineTotal": 4800
+        }
+      ],
+      "memoNotes": "Po-50",
+      "attachmentFileName": "",
+      "totalAmount": 6380,
+      "status": "Draft"
     }
   ],
   "suppliers": [

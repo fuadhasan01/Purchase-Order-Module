@@ -1,198 +1,246 @@
-<div class="container mt-3 mb-5">
-  <h3>Create Purchase Order</h3>
+<div class="container py-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary mb-0">
+      <i class="bi bi-file-earmark-plus me-2"></i> Create Purchase Order
+    </h2>
+    <button class="btn btn-outline-secondary shadow-sm" (click)="onCancel()">
+      <i class="bi bi-arrow-left me-1"></i> Back to List
+    </button>
+  </div>
 
-  <form [formGroup]="purchaseOrderForm" (ngSubmit)="onSubmit()">
-    <!-- Purchase Order Number -->
-    <div class="mb-3">
-      <label>Purchase Order Number</label>
-      <input type="text" class="form-control" formControlName="purchaseOrderNumber" />
-      <div
-        class="text-danger"
-        *ngIf="
-          purchaseOrderForm.get('purchaseOrderNumber')?.invalid &&
-          purchaseOrderForm.get('purchaseOrderNumber')?.touched
-        "
-      >
-        Purchase Order Number is required.
-      </div>
-    </div>
+  <!-- Form Card -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <form [formGroup]="purchaseOrderForm" (ngSubmit)="onSubmit()">
+        <!-- Basic Info Section -->
+        <h5 class="fw-semibold text-secondary border-bottom pb-2 mb-3">
+          <i class="bi bi-info-circle me-2"></i> Basic Information
+        </h5>
 
-    <!-- Supplier -->
-    <div class="mb-3">
-      <label>Supplier</label>
-      <select class="form-control" formControlName="supplierId">
-        <option value="">Select Supplier</option>
-        <option [value]="supplier.supplierId" *ngFor="let supplier of suppliers$ | async">
-          {{ supplier.supplierName }}
-        </option>
-      </select>
-      <div
-        class="text-danger"
-        *ngIf="
-          purchaseOrderForm.get('supplierId')?.invalid &&
-          purchaseOrderForm.get('supplierId')?.touched
-        "
-      >
-        Supplier is required.
-      </div>
-    </div>
+        <div class="row g-3">
+          <!-- Purchase Order Number -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-secondary">PO Number</label>
+            <input type="text" class="form-control" formControlName="purchaseOrderNumber" />
+            <div
+              class="text-danger small mt-1"
+              *ngIf="
+                purchaseOrderForm.get('purchaseOrderNumber')?.invalid &&
+                purchaseOrderForm.get('purchaseOrderNumber')?.touched
+              "
+            >
+              Purchase Order Number is required.
+            </div>
+          </div>
 
-    <!-- Warehouse -->
-    <div class="mb-3">
-      <label>Warehouse</label>
-      <select class="form-control" formControlName="warehouseId">
-        <option value="">Select Warehouse</option>
-        <option [value]="warehouse.warehouseId" *ngFor="let warehouse of warehouses$ | async">
-          {{ warehouse.warehouseName }}
-        </option>
-      </select>
-      <div
-        class="text-danger"
-        *ngIf="
-          purchaseOrderForm.get('warehouseId')?.invalid &&
-          purchaseOrderForm.get('warehouseId')?.touched
-        "
-      >
-        Warehouse is required.
-      </div>
-    </div>
-
-    <!-- Shipping Address -->
-    <div class="mb-3">
-      <label>Shipping Address</label>
-      <textarea class="form-control" formControlName="shippingAddress"></textarea>
-      <div
-        class="text-danger"
-        *ngIf="
-          purchaseOrderForm.get('shippingAddress')?.invalid &&
-          purchaseOrderForm.get('shippingAddress')?.touched
-        "
-      >
-        Shipping Address is required.
-      </div>
-    </div>
-
-    <!-- VAT Rate -->
-    <div class="mb-3">
-      <label>VAT Rate</label>
-      <select class="form-control" formControlName="vatRateId">
-        <option value="">Select VAT</option>
-        <option [value]="vat.vatRateId" *ngFor="let vat of vatRates$ | async">
-          {{ vat.vatPercentage }}%
-        </option>
-      </select>
-      <div
-        class="text-danger"
-        *ngIf="
-          purchaseOrderForm.get('vatRateId')?.invalid && purchaseOrderForm.get('vatRateId')?.touched
-        "
-      >
-        VAT Rate is required.
-      </div>
-    </div>
-
-    <!-- Order Date -->
-    <div class="mb-3">
-      <label>Order Date</label>
-      <input
-        type="text"
-        class="form-control"
-        [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-        bsDatepicker
-        formControlName="orderDate"
-        placeholder="Select order date"
-      />
-    </div>
-
-    <!-- Items Section -->
-    <h5>Items</h5>
-    <div class="row g-2 align-items-end" *ngIf="items.controls.length === 0">
-      <div class="text-danger">Atleast one item is required.</div>
-    </div>
-    <div formArrayName="items" class="mb-3">
-      <div
-        *ngFor="let item of items.controls; let i = index"
-        [formGroupName]="i"
-        class="border p-2 mb-2"
-      >
-        <div class="row g-2">
-          <!-- Product -->
-          <div class="col">
-            <label>Product</label>
-            <select class="form-control" formControlName="productId">
-              <option value="">Select Product</option>
-              <option [value]="product.productId" *ngFor="let product of products$ | async">
-                {{ product.productName }}
+          <!-- Supplier -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-secondary">Supplier</label>
+            <select class="form-select" formControlName="supplierId">
+              <option value="">Select Supplier</option>
+              <option [value]="s.supplierId" *ngFor="let s of suppliers$ | async">
+                {{ s.supplierName }}
               </option>
             </select>
             <div
-              class="text-danger"
-              *ngIf="item.get('productId')?.invalid && item.get('productId')?.touched"
+              class="text-danger small mt-1"
+              *ngIf="
+                purchaseOrderForm.get('supplierId')?.invalid &&
+                purchaseOrderForm.get('supplierId')?.touched
+              "
             >
-              Product is required.
+              Supplier is required.
             </div>
           </div>
 
-          <!-- Quantity -->
-          <div class="col">
-            <label>Quantity</label>
-            <input type="number" class="form-control" formControlName="quantity" />
+          <!-- Warehouse -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-secondary">Warehouse</label>
+            <select class="form-select" formControlName="warehouseId">
+              <option value="">Select Warehouse</option>
+              <option [value]="w.warehouseId" *ngFor="let w of warehouses$ | async">
+                {{ w.warehouseName }}
+              </option>
+            </select>
             <div
-              class="text-danger"
-              *ngIf="item.get('quantity')?.invalid && item.get('quantity')?.touched"
+              class="text-danger small mt-1"
+              *ngIf="
+                purchaseOrderForm.get('warehouseId')?.invalid &&
+                purchaseOrderForm.get('warehouseId')?.touched
+              "
             >
-              Quantity must be at least 1.
+              Warehouse is required.
             </div>
-          </div>
-
-          <!-- Unit Price -->
-          <div class="col">
-            <label>Unit Price</label>
-            <input type="number" class="form-control" formControlName="unitPrice" />
-            <div
-              class="text-danger"
-              *ngIf="item.get('unitPrice')?.invalid && item.get('unitPrice')?.touched"
-            >
-              Unit Price must be greater than 0.
-            </div>
-          </div>
-
-          <!-- Line Total -->
-          <div class="col">
-            <label>Line Total</label>
-            <input type="number" class="form-control" formControlName="lineTotal" readonly />
-          </div>
-
-          <!-- Remove Button -->
-          <div class="col-1 d-flex align-items-end">
-            <button type="button" class="btn btn-danger btn-sm" (click)="removeItem(i)">X</button>
           </div>
         </div>
-      </div>
+
+        <div class="row g-3 mt-3">
+          <!-- VAT Rate -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold text-secondary">VAT Rate</label>
+            <select class="form-select" formControlName="vatRateId">
+              <option value="">Select VAT</option>
+              <option [value]="v.vatRateId" *ngFor="let v of vatRates$ | async">
+                {{ v.vatPercentage }}%
+              </option>
+            </select>
+            <div
+              class="text-danger small mt-1"
+              *ngIf="
+                purchaseOrderForm.get('vatRateId')?.invalid &&
+                purchaseOrderForm.get('vatRateId')?.touched
+              "
+            >
+              VAT Rate is required.
+            </div>
+          </div>
+
+          <!-- Order Date -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold text-secondary">Order Date</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light"><i class="bi bi-calendar3"></i></span>
+              <input
+                type="text"
+                class="form-control"
+                bsDatepicker
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                formControlName="orderDate"
+                placeholder="Select order date"
+              />
+            </div>
+          </div>
+
+          <!-- Shipping Address -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-secondary">Shipping Address</label>
+            <textarea rows="2" class="form-control" formControlName="shippingAddress"></textarea>
+            <div
+              class="text-danger small mt-1"
+              *ngIf="
+                purchaseOrderForm.get('shippingAddress')?.invalid &&
+                purchaseOrderForm.get('shippingAddress')?.touched
+              "
+            >
+              Shipping Address is required.
+            </div>
+          </div>
+        </div>
+
+        <!-- Items Section -->
+        <h5 class="fw-semibold text-secondary border-bottom pb-2 mt-4 mb-3">
+          <i class="bi bi-box-seam me-2"></i> Items
+        </h5>
+        <div class="text-danger small mb-3" *ngIf="items.length === 0">
+          At least one item is required.
+        </div>
+        <div formArrayName="items">
+          <div
+            *ngFor="let item of items.controls; let i = index"
+            [formGroupName]="i"
+            class="border rounded p-3 mb-3 bg-light"
+          >
+            <div class="row g-3 align-items-end">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold text-secondary">Product</label>
+                <select class="form-select" formControlName="productId">
+                  <option value="">Select Product</option>
+                  <option [value]="p.productId" *ngFor="let p of products$ | async">
+                    {{ p.productName }}
+                  </option>
+                </select>
+                <div
+                  class="text-danger small mt-1"
+                  *ngIf="item.get('productId')?.invalid && item.get('productId')?.touched"
+                >
+                  Product is required.
+                </div>
+              </div>
+
+              <div class="col-md-2">
+                <label class="form-label fw-semibold text-secondary">Quantity</label>
+                <input type="number" class="form-control" formControlName="quantity" />
+                <div
+                  class="text-danger small mt-1"
+                  *ngIf="item.get('quantity')?.invalid && item.get('quantity')?.touched"
+                >
+                  Quantity is required and must be greater than 0.
+                </div>
+              </div>
+
+              <div class="col-md-2">
+                <label class="form-label fw-semibold text-secondary">Unit Price</label>
+                <input type="number" class="form-control" formControlName="unitPrice" />
+                <div
+                  class="text-danger small mt-1"
+                  *ngIf="item.get('unitPrice')?.invalid && item.get('unitPrice')?.touched"
+                >
+                  Unit Price is required and must be greater than 0.
+                </div>
+              </div>
+
+              <div class="col-md-2">
+                <label class="form-label fw-semibold text-secondary">Line Total</label>
+                <input type="number" class="form-control" formControlName="lineTotal" readonly />
+              </div>
+
+              <div class="col-md-2 text-end">
+                <button type="button" class="btn btn-outline-danger mt-3" (click)="removeItem(i)">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-outline-primary mb-4" (click)="addItem()">
+          <i class="bi bi-plus-lg me-1"></i> Add Item
+        </button>
+
+        <!-- Summary Section -->
+        <h5 class="fw-semibold text-secondary border-bottom pb-2 mb-3">
+          <i class="bi bi-calculator me-2"></i> Summary
+        </h5>
+
+        <div class="bg-light p-3 rounded mb-3">
+          <p class="mb-1">
+            Sub Total: <strong>{{ subTotal | number : '1.2-2' }}</strong>
+          </p>
+          <p class="mb-1">
+            VAT: <strong>{{ vatAmount | number : '1.2-2' }}</strong>
+          </p>
+          <p class="mb-0">
+            Grand Total: <strong>{{ grandTotal | number : '1.2-2' }}</strong>
+          </p>
+        </div>
+
+        <!-- Notes -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-secondary">Memo / Notes</label>
+          <textarea class="form-control" rows="2" formControlName="memoNotes"></textarea>
+        </div>
+
+        <!-- Attachment -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold text-secondary">Attachment (optional)</label>
+          <input type="file" class="form-control" formControlName="attachmentFileName" />
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary shadow-sm">
+            <i class="bi bi-save me-1"></i> Save
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary ms-2 shadow-sm"
+            (click)="onCancel()"
+          >
+            <i class="bi bi-x-circle me-1"></i> Cancel
+          </button>
+        </div>
+      </form>
     </div>
-
-    <button type="button" class="btn btn-secondary mb-3" (click)="addItem()">Add Item</button>
-
-    <!-- Summary -->
-    <h5>Summary</h5>
-    <p>Sub Total: {{ subTotal | number : '1.2-2' }}</p>
-    <p>VAT: {{ vatAmount | number : '1.2-2' }}</p>
-    <p>Grand Total: {{ grandTotal | number : '1.2-2' }}</p>
-
-    <!-- Memo / Notes -->
-    <div class="mb-3">
-      <label>Memo / Notes</label>
-      <textarea class="form-control" formControlName="memoNotes"></textarea>
-    </div>
-
-    <!-- Attachment -->
-    <div class="mb-3">
-      <label>Attachment (optional)</label>
-      <input type="file" class="form-control" formControlName="attachmentFileName" />
-    </div>
-
-    <!-- Buttons -->
-    <button type="submit" class="btn btn-primary">Save</button>
-    <button type="button" class="btn btn-secondary ms-2" (click)="onCancel()">Cancel</button>
-  </form>
+  </div>
 </div>
