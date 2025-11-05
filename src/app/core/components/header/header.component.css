@@ -1,18 +1,13 @@
-.navbar-dark .nav-item .nav-link {
-    color: #fff;
+.navbar .nav-link.active {
+    color: #0d6efd !important;
+    font-weight: 600;
+    border-bottom: 2px solid #0d6efd;
 }
 
-.navbar-dark .nav-item .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-    border-radius: 0.25rem;
-    color: #fff;
+.navbar .nav-link {
+    transition: color 0.2s ease, border-bottom 0.2s ease;
 }
 
-.fa-li {
-    position: relative;
-    left: 0;
-}
-.container-fluid a{
-    cursor: pointer;
+.navbar .nav-link:hover {
+    color: #0a58ca !important;
 }
