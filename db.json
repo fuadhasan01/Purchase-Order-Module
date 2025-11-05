@@ -167,48 +167,77 @@
       "totalAmount": 1633.5,
       "status": "Draft",
       "id": "a8ba"
+    },
+    {
+      "id": "e1ea",
+      "poNumber": "PO-999",
+      "supplierId": "2",
+      "warehouseId": "2",
+      "shippingAddress": "Khulna",
+      "vatRateId": "1",
+      "orderDate": "2025-11-06T13:16:43.000Z",
+      "items": [
+        {
+          "productId": "2",
+          "quantity": 10,
+          "unitPrice": 100,
+          "lineTotal": 1000
+        }
+      ],
+      "memoNotes": "Po-999 Test",
+      "attachmentFileName": "C:\\fakepath\\Angular-Setup.txt",
+      "totalAmount": 1050,
+      "status": "Draft"
     }
   ],
   "suppliers": [
     {
       "supplierId": "1",
-      "supplierName": "ABC Supplier"
+      "supplierName": "ABC Supplier",
+      "id": "160b"
     },
     {
       "supplierId": "2",
-      "supplierName": "XYZ Supplier"
+      "supplierName": "XYZ Supplier",
+      "id": "8c21"
     }
   ],
   "warehouses": [
     {
       "warehouseId": "1",
-      "warehouseName": "Main Warehouse"
+      "warehouseName": "Main Warehouse",
+      "id": "d561"
     },
     {
       "warehouseId": "2",
-      "warehouseName": "Branch Warehouse"
+      "warehouseName": "Branch Warehouse",
+      "id": "9aad"
     }
   ],
   "products": [
     {
       "productId": "1",
       "productName": "Product A",
-      "price": 100
+      "price": 100,
+      "id": "02fb"
     },
     {
       "productId": "2",
       "productName": "Product B",
-      "price": 200
+      "price": 200,
+      "id": "8723"
     }
   ],
   "vatRates": [
     {
       "vatRateId": "1",
-      "vatPercentage": 5
+      "vatPercentage": 5,
+      "id": "43cf"
     },
     {
       "vatRateId": "2",
-      "vatPercentage": 10
+      "vatPercentage": 10,
+      "id": "b10e"
     }
   ]
 }

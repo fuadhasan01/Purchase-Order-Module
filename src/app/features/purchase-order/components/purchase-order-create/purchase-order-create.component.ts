@@ -4,9 +4,8 @@ import { SupplierModel } from '../../models/supplier.model';
 import { WarehouseModel } from '../../models/warehouse.model';
 import { ProductModel } from '../../models/product.model';
 import { VatRateModel } from '../../models/vat-rate.model';
-import { CommonModule } from '@angular/common';
 import { PurchaseOrderService } from '../../services/purchase-order.service';
-import { Observable, Subject, take } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -22,6 +21,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
   warehouses$!: Observable<WarehouseModel[]>;
   products$!: Observable<ProductModel[]>;
   vatRates$!: Observable<VatRateModel[]>;
+  vatRates: VatRateModel[] = [];
 
   isEditMode = false;
   purchaseOrderId: string | null = null;
@@ -64,6 +64,10 @@ export class PurchaseOrderCreateComponent implements OnInit {
     this.warehouses$ = this.purchaseOrderService.getWarehouses();
     this.products$ = this.purchaseOrderService.getProducts();
     this.vatRates$ = this.purchaseOrderService.getVatRates();
+
+    this.vatRates$.pipe(take(1)).subscribe((rates) => {
+      this.vatRates = rates;
+    });
   }
 
   get items(): FormArray {
@@ -99,14 +103,8 @@ export class PurchaseOrderCreateComponent implements OnInit {
 
   get vatAmount(): number {
     const vatRateId = this.purchaseOrderForm.get('vatRateId')?.value;
-    const selectedOption = document.querySelector<HTMLSelectElement>(
-      'select[formControlName="vatRateId"]'
-    );
-    const vatText = selectedOption?.selectedOptions[0]?.textContent?.trim() || '';
-
-    const vatPercentage = parseFloat(vatText.replace('%', '').trim());
-    if (isNaN(vatPercentage)) return 0;
-
+    const selectedRate = this.vatRates.find((r) => r.vatRateId === vatRateId);
+    const vatPercentage = selectedRate ? selectedRate.vatPercentage : 0;
     return (this.subTotal * vatPercentage) / 100;
   }
 
@@ -185,7 +183,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
         .subscribe({
           next: () => {
             alert('Purchase Order updated successfully!');
-            this.router.navigate(['/poList']);
+            this.router.navigate(['/po/poList']);
           },
           error: (err) => {
             console.error('Error updating PO:', err);
