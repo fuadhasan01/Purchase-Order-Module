@@ -55,14 +55,14 @@
   </div>
 
   <!-- Table -->
-  @if (purchaseOrders$ | async; as purchaseOrders) {
-  <table class="table table-bordered table-striped">
+  <table
+    class="table table-bordered table-striped"
+    *ngIf="purchaseOrders$ | async as purchaseOrders; else loading"
+  >
     <thead>
       <tr>
         <th (click)="onSort('poNumber')" style="cursor: pointer">
-          PO Number @if (sortColumn === 'poNumber'){
-          <span>({{ sortDirection }})</span>
-          }
+          PO Number <span *ngIf="sortColumn === 'poNumber'">({{ sortDirection }})</span>
         </th>
         <th (click)="onSort('supplierId')" style="cursor: pointer">
           Supplier <span *ngIf="sortColumn === 'supplierId'">({{ sortDirection }})</span>
@@ -84,11 +84,10 @@
     </thead>
 
     <tbody>
-      @for (po of purchaseOrders; track po.id) {
-      <tr>
+      <tr *ngFor="let po of purchaseOrders">
         <td>{{ po.poNumber }}</td>
-        <td>{{ po.supplierId }}</td>
-        <td>{{ po.warehouseId }}</td>
+        <td>{{ po.supplierName }}</td>
+        <td>{{ po.warehouseName }}</td>
         <td>{{ po.orderDate }}</td>
         <td>{{ po.totalAmount | number : '1.2-2' }}</td>
         <td>{{ po.status }}</td>
@@ -98,11 +97,10 @@
           <button class="btn btn-sm btn-danger" (click)="deletePo(po.id)">Delete</button>
         </td>
       </tr>
-      } @empty {
-      <tr>
+
+      <tr *ngIf="purchaseOrders.length === 0">
         <td colspan="7" class="text-center text-muted">No purchase orders found.</td>
       </tr>
-      }
     </tbody>
   </table>
 
@@ -115,7 +113,11 @@
     [boundaryLinks]="true"
     class="justify-content-center"
   ></pagination>
-  } @else {
-  <p>Loading purchase orders...</p>
-  }
+  <ng-template #loading>
+    <div class="text-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </ng-template>
 </div>

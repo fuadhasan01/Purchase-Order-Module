@@ -22,7 +22,6 @@ export class PurchaseOrderCreateComponent implements OnInit {
   warehouses$!: Observable<WarehouseModel[]>;
   products$!: Observable<ProductModel[]>;
   vatRates$!: Observable<VatRateModel[]>;
-  vatRatesAmount = new Subject<number>();
 
   isEditMode = false;
   purchaseOrderId: string | null = null;
@@ -56,7 +55,6 @@ export class PurchaseOrderCreateComponent implements OnInit {
         this.purchaseOrderId = id;
         this.loadPurchaseOrder(id);
       } else {
-        // Only add default item if NOT edit mode
         this.addItem();
       }
     });
@@ -116,7 +114,6 @@ export class PurchaseOrderCreateComponent implements OnInit {
     return this.subTotal + this.vatAmount;
   }
 
-  // 🟩 Load existing PO data for edit
   loadPurchaseOrder(id: string): void {
     this.purchaseOrderService
       .getPurchaseOrderById(id)
@@ -182,7 +179,6 @@ export class PurchaseOrderCreateComponent implements OnInit {
     };
 
     if (this.isEditMode && this.purchaseOrderId) {
-      // 🟨 Update existing PO
       this.purchaseOrderService
         .updatePurchaseOrder(this.purchaseOrderId, purchaseOrderData)
         .pipe(take(1))
@@ -197,7 +193,6 @@ export class PurchaseOrderCreateComponent implements OnInit {
           },
         });
     } else {
-      // 🟩 Create new PO
       this.purchaseOrderService
         .createPurchaseOrder(purchaseOrderData)
         .pipe(take(1))
@@ -216,6 +211,6 @@ export class PurchaseOrderCreateComponent implements OnInit {
     }
   }
   onCancel(): void {
-    this.router.navigate(['/poList']);
+    this.router.navigate(['/po/poList']);
   }
 }

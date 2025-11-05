@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { PurchaseOrderModel } from '../../models/purchase-order.model';
-import { from, Observable, of } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
 import { PurchaseOrderService } from '../../services/purchase-order.service';
+import { PurchaseOrderListDto } from '../../models/po-list.dto';
 
 @Component({
   selector: 'app-purchase-order-list',
@@ -11,114 +11,160 @@ import { PurchaseOrderService } from '../../services/purchase-order.service';
   styleUrls: ['./purchase-order-list.component.css'],
 })
 export class PurchaseOrderListComponent implements OnInit {
-  Math = Math; // Expose Math to template
-  purchaseOrders$: Observable<PurchaseOrderModel[]>;
-  allPurchaseOrders: PurchaseOrderModel[] = [];
+  purchaseOrders$!: Observable<PurchaseOrderListDto[]>;
+  allPurchaseOrders: PurchaseOrderListDto[] = [];
 
+  // For filtering
   searchTerm: string = '';
   selectedStatus: string = '';
   startDate: any = null;
   endDate: any = null;
 
+  // From ng bootstrap datepicker
+  dateRange: (Date | undefined)[] | undefined = undefined;
+
+  // For sorting
   sortColumn: string = 'poNumber';
   sortDirection: 'asc' | 'desc' = 'asc';
 
-  // pagination
+  // For pagination
   currentPage = 1;
   pageSize = 10;
   totalItems = 0;
 
-  constructor(private purchaseOrderService: PurchaseOrderService, private router: Router) {
-    this.purchaseOrders$ = this.purchaseOrderService.getPurchaseOrders();
-  }
+  constructor(
+    private purchaseOrderService: PurchaseOrderService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.loadPurchaseOrders();
-  }
+    this.route.queryParams.subscribe((params) => {
+      this.searchTerm = params['search'] || '';
+      this.selectedStatus = params['status'] || '';
+      this.sortColumn = params['sortColumn'] || 'poNumber';
+      this.sortDirection = params['sortDirection'] || 'asc';
+      this.currentPage = +params['page'] || 1;
 
-  loadPurchaseOrders(): void {
-    this.purchaseOrderService.getPurchaseOrders().subscribe((data) => {
-      this.allPurchaseOrders = data;
-      this.applyFilters();
+      this.startDate = params['startDate'] ? new Date(params['startDate']) : null;
+      this.endDate = params['endDate'] ? new Date(params['endDate']) : null;
+
+      this.fetchPurchaseOrders();
     });
   }
 
-  goToPoCreate(): void {
-    this.router.navigate(['/poCreate']);
+  fetchPurchaseOrders(): void {
+    this.purchaseOrderService.getPurchaseOrdersWithDetails().subscribe({
+      next: (data) => {
+        this.allPurchaseOrders = data;
+        this.renderList();
+      },
+      error: (error) => {
+        console.error('Error fetching purchase orders', error);
+      },
+    });
   }
 
-  // Combined filtering logic
-  applyFilters(): void {
+  // combined filtering logic
+  renderList(): void {
     let filtered = [...this.allPurchaseOrders];
-
-    // search filter
-    if (this.searchTerm.trim()) {
-      const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (po) =>
-          po.poNumber.toLowerCase().includes(term) ||
-          po.supplierId.toString().includes(term) ||
-          po.warehouseId.toString().includes(term)
-      );
-    }
-
-    // status filter
-    if (this.selectedStatus) {
-      filtered = filtered.filter((po) => po.status === this.selectedStatus);
-    }
-
-    // date range filter
-    if (this.startDate && this.endDate) {
-      const start = new Date(this.startDate);
-      const end = new Date(this.endDate);
-      filtered = filtered.filter((po) => {
-        const orderDate = new Date(po.orderDate);
-        return orderDate >= start && orderDate <= end;
-      });
-    }
-
-    // sorting
-    filtered = filtered.sort((a, b) => {
-      const aVal = (a as any)[this.sortColumn];
-      const bVal = (b as any)[this.sortColumn];
-      if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
-      if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    // pagination
+    let list = this.applySearch(filtered);
+    list = this.applyStatusFilter(list);
+    list = this.applyDateFilter(list);
+    list = this.applySorting(list);
     this.totalItems = filtered.length;
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    const paged = filtered.slice(startIndex, endIndex);
+    list = this.applyPagination(list);
 
-    this.purchaseOrders$ = of(paged);
+    this.purchaseOrders$ = of(list);
+  }
+
+  // search filter method
+  private applySearch(list: PurchaseOrderListDto[]): PurchaseOrderListDto[] {
+    if (!this.searchTerm.trim()) return list;
+
+    const text = this.searchTerm.toLowerCase();
+    return list.filter(
+      (x) =>
+        x.poNumber.toLowerCase().includes(text) ||
+        x.supplierName?.toLowerCase().includes(text) ||
+        x.warehouseName?.toLowerCase().includes(text)
+    );
+  }
+
+  // status filter method
+  private applyStatusFilter(list: PurchaseOrderListDto[]): PurchaseOrderListDto[] {
+    if (!this.selectedStatus) return list;
+    return list.filter((x) => x.status === this.selectedStatus);
+  }
+
+  // date range filter method
+  private applyDateFilter(list: PurchaseOrderListDto[]): PurchaseOrderListDto[] {
+    if (!this.startDate || !this.endDate) return list;
+
+    const start = new Date(this.startDate);
+    const end = new Date(this.endDate);
+
+    return list.filter((x) => {
+      const date = new Date(x.orderDate);
+      return date >= start && date <= end;
+    });
+  }
+
+  // sorting method
+  private applySorting(list: PurchaseOrderListDto[]): PurchaseOrderListDto[] {
+    const dir = this.sortDirection === 'asc' ? 1 : -1;
+
+    return list.sort((a: any, b: any) => {
+      const valA = a[this.sortColumn];
+      const valB = b[this.sortColumn];
+
+      if (valA === valB) return 0;
+      return valA > valB ? dir : -dir;
+    });
+  }
+
+  // pagination method
+  private applyPagination(list: PurchaseOrderListDto[]): PurchaseOrderListDto[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return list.slice(start, start + this.pageSize);
+  }
+
+  updateQueryParams(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        search: this.searchTerm || null,
+        status: this.selectedStatus || null,
+        startDate: this.startDate ? this.startDate.toISOString() : null,
+        endDate: this.endDate ? this.endDate.toISOString() : null,
+        sortColumn: this.sortColumn,
+        sortDirection: this.sortDirection,
+        page: this.currentPage,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   onSearchChange(): void {
     this.currentPage = 1;
-    this.applyFilters();
+    this.updateQueryParams();
   }
 
   onFilterChange(): void {
     this.currentPage = 1;
-    this.applyFilters();
+    this.updateQueryParams();
   }
-
-  // Add this property
-  dateRange: (Date | undefined)[] | undefined = undefined;
 
   onDateRangeChange(range: (Date | undefined)[] | undefined): void {
     if (range && range[0] && range[1]) {
-      // Convert to actual start/end dates
       this.startDate = range[0];
       this.endDate = range[1];
     } else {
-      this.startDate = '';
-      this.endDate = '';
+      this.startDate = null;
+      this.endDate = null;
     }
     this.currentPage = 1;
-    this.applyFilters();
+    this.updateQueryParams();
   }
 
   onSort(column: string): void {
@@ -128,13 +174,14 @@ export class PurchaseOrderListComponent implements OnInit {
       this.sortColumn = column;
       this.sortDirection = 'asc';
     }
-    this.applyFilters();
+    this.updateQueryParams();
   }
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    this.applyFilters();
+    this.updateQueryParams();
   }
+
   resetFilters(): void {
     this.searchTerm = '';
     this.selectedStatus = '';
@@ -142,17 +189,22 @@ export class PurchaseOrderListComponent implements OnInit {
     this.startDate = null;
     this.endDate = null;
     this.currentPage = 1;
-    this.applyFilters();
+    this.updateQueryParams();
   }
+
+  goToPoCreate(): void {
+    this.router.navigate(['/po/poCreate']);
+  }
+
   editPo(poId: string): void {
-    this.router.navigate(['/poEdit', poId]);
+    this.router.navigate(['/po/poEdit', poId]);
   }
 
   deletePo(poId: string): void {
     if (confirm('Are you sure you want to delete this Purchase Order?')) {
       this.purchaseOrderService.deletePurchaseOrder(poId).subscribe(() => {
         alert('Purchase Order deleted successfully.');
-        this.loadPurchaseOrders();
+        this.fetchPurchaseOrders();
       });
     }
   }

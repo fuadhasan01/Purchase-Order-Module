@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { PurchaseOrderModel } from '../models/purchase-order.model';
 import { SupplierModel } from '../models/supplier.model';
 import { WarehouseModel } from '../models/warehouse.model';
-import { Observable } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { ProductModel } from '../models/product.model';
 import { VatRateModel } from '../models/vat-rate.model';
+import { PurchaseOrderListDto } from '../models/po-list.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,25 @@ export class PurchaseOrderService {
   constructor(private httpClient: HttpClient) {}
   getPurchaseOrders() {
     return this.httpClient.get<PurchaseOrderModel[]>(this.apiUrl);
+  }
+  getPurchaseOrdersWithDetails(): Observable<PurchaseOrderListDto[]> {
+    return forkJoin({
+      purchaseOrders: this.httpClient.get<PurchaseOrderModel[]>(this.apiUrl),
+      suppliers: this.httpClient.get<SupplierModel[]>('http://localhost:3000/suppliers'),
+      warehouses: this.httpClient.get<WarehouseModel[]>('http://localhost:3000/warehouses'),
+    }).pipe(
+      map(({ purchaseOrders, suppliers, warehouses }) =>
+        purchaseOrders.map((po) => ({
+          ...po,
+          supplierName:
+            suppliers.find((s) => s.supplierId === po.supplierId)?.supplierName ||
+            'Unknown Supplier',
+          warehouseName:
+            warehouses.find((w) => w.warehouseId === po.warehouseId)?.warehouseName ||
+            'Unknown Warehouse',
+        }))
+      )
+    );
   }
   createPurchaseOrder(data: any): Observable<any> {
     return this.httpClient.post(this.apiUrl, data);

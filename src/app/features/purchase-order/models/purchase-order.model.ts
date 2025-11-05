@@ -1,10 +1,10 @@
 export interface PurchaseOrderModel {
   id: string;
   poNumber: string;
-  supplierId: number;
-  warehouseId: number;
+  supplierId: string;
+  warehouseId: string;
   shippingAddress: string;
-  vatRateId: number;
+  vatRateId: string;
   orderDate: string; // ISO date string
   totalAmount: number;
   status: 'Draft' | 'Approved' | 'Received';
@@ -14,7 +14,7 @@ export interface PurchaseOrderModel {
 }
 
 export interface PurchaseOrderItemModel {
-  productId: number;
+  productId: string;
   quantity: number;
   unitPrice: number;
   lineTotal: number;
