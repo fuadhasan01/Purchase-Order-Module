@@ -1,13 +1,24 @@
 {
   "purchaseOrders": [
     {
-      "id": "1",
       "poNumber": "PO-001",
       "supplierId": "1",
       "warehouseId": "1",
-      "orderDate": "2025-11-03",
-      "totalAmount": 1200,
-      "status": "Draft"
+      "shippingAddress": "Japan",
+      "vatRateId": "2",
+      "orderDate": "2025-11-03T00:00:00.000Z",
+      "items": [
+        {
+          "productId": "1",
+          "quantity": 60,
+          "unitPrice": 500,
+          "lineTotal": 30000
+        }
+      ],
+      "attachmentFileName": "",
+      "totalAmount": 33000,
+      "status": "Draft",
+      "id": "1"
     },
     {
       "id": "8313",

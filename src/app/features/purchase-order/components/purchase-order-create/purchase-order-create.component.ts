@@ -35,6 +35,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
   ngOnInit(): void {
     this.loadData();
 
+    // Create form with FormBuilder
     this.purchaseOrderForm = this.fb.group({
       purchaseOrderNumber: ['', Validators.required],
       supplierId: [null, Validators.required],
@@ -42,6 +43,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
       shippingAddress: ['', Validators.required],
       vatRateId: [null, Validators.required],
       orderDate: [new Date(), Validators.required],
+      status: [null, Validators.required],
       items: this.fb.array([], Validators.required),
       memoNotes: [''],
       attachmentFileName: [''],
@@ -96,7 +98,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
 
   get subTotal(): number {
     return this.items.controls.reduce(
-      (sum, group) => sum + (group.get('lineTotal')?.value || 0),
+      (sum, field) => sum + (field.get('lineTotal')?.value || 0),
       0
     );
   }
@@ -126,6 +128,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
             warehouseId: po.warehouseId,
             shippingAddress: po.shippingAddress,
             vatRateId: po.vatRateId,
+            status: po.status,
             orderDate: new Date(po.orderDate),
             memoNotes: po.memoNotes,
             // attachmentFileName: po.attachmentFileName,
@@ -173,7 +176,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
       memoNotes: formValue.memoNotes,
       attachmentFileName: formValue.attachmentFileName,
       totalAmount: this.grandTotal,
-      status: 'Draft',
+      status: formValue.status,
     };
 
     if (this.isEditMode && this.purchaseOrderId) {

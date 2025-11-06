@@ -13,15 +13,22 @@ import { PurchaseOrderListDto } from '../models/po-list.dto';
 })
 export class PurchaseOrderService {
   private apiUrl = 'http://localhost:3000/purchaseOrders';
+  private suppliersUrl = 'http://localhost:3000/suppliers';
+  private warehousesUrl = 'http://localhost:3000/warehouses';
+  private productsUrl = 'http://localhost:3000/products';
+  private vatRatesUrl = 'http://localhost:3000/vatRates';
+
   constructor(private httpClient: HttpClient) {}
+
   getPurchaseOrders() {
     return this.httpClient.get<PurchaseOrderModel[]>(this.apiUrl);
   }
+
   getPurchaseOrdersWithDetails(): Observable<PurchaseOrderListDto[]> {
     return forkJoin({
       purchaseOrders: this.httpClient.get<PurchaseOrderModel[]>(this.apiUrl),
-      suppliers: this.httpClient.get<SupplierModel[]>('http://localhost:3000/suppliers'),
-      warehouses: this.httpClient.get<WarehouseModel[]>('http://localhost:3000/warehouses'),
+      suppliers: this.httpClient.get<SupplierModel[]>(this.suppliersUrl),
+      warehouses: this.httpClient.get<WarehouseModel[]>(this.warehousesUrl),
     }).pipe(
       map(({ purchaseOrders, suppliers, warehouses }) =>
         purchaseOrders.map((po) => ({
@@ -36,21 +43,27 @@ export class PurchaseOrderService {
       )
     );
   }
+
   createPurchaseOrder(data: any): Observable<any> {
     return this.httpClient.post(this.apiUrl, data);
   }
+
   getSuppliers(): Observable<SupplierModel[]> {
-    return this.httpClient.get<SupplierModel[]>('http://localhost:3000/suppliers');
+    return this.httpClient.get<SupplierModel[]>(this.suppliersUrl);
   }
+
   getWarehouses(): Observable<WarehouseModel[]> {
-    return this.httpClient.get<WarehouseModel[]>('http://localhost:3000/warehouses');
+    return this.httpClient.get<WarehouseModel[]>(this.warehousesUrl);
   }
+
   getProducts(): Observable<ProductModel[]> {
-    return this.httpClient.get<ProductModel[]>('http://localhost:3000/products');
+    return this.httpClient.get<ProductModel[]>(this.productsUrl);
   }
+
   getVatRates(): Observable<VatRateModel[]> {
-    return this.httpClient.get<VatRateModel[]>('http://localhost:3000/vatRates');
+    return this.httpClient.get<VatRateModel[]>(this.vatRatesUrl);
   }
+
   getPurchaseOrderById(id: string): Observable<PurchaseOrderModel> {
     return this.httpClient.get<PurchaseOrderModel>(`${this.apiUrl}/${id}`);
   }
