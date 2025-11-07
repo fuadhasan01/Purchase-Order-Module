@@ -7,6 +7,7 @@ import { VatRateModel } from '../../models/vat-rate.model';
 import { PurchaseOrderService } from '../../services/purchase-order.service';
 import { Observable, take } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PurchaseOrderItemModel } from '../../models/purchase-order.model';
 
 @Component({
   selector: 'app-purchase-order-create',

@@ -17,8 +17,8 @@ export class PurchaseOrderListComponent implements OnInit {
   // For filtering
   searchTerm: string = '';
   selectedStatus: string = '';
-  startDate: any = null;
-  endDate: any = null;
+  startDate: any | null = null;
+  endDate: any | null = null;
 
   // From ng bootstrap datepicker
   dateRange: (Date | undefined)[] | undefined = undefined;
@@ -130,7 +130,8 @@ export class PurchaseOrderListComponent implements OnInit {
     return list.slice(start, start + this.pageSize);
   }
 
-  updateQueryParams(): void {
+  // method to update URL query params
+  private updateQueryParams(): void {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
@@ -146,16 +147,19 @@ export class PurchaseOrderListComponent implements OnInit {
     });
   }
 
+  // on search change handler
   onSearchChange(): void {
     this.currentPage = 1;
     this.updateQueryParams();
   }
 
+  // status filter change handler
   onFilterChange(): void {
     this.currentPage = 1;
     this.updateQueryParams();
   }
 
+  // date range change handler
   onDateRangeChange(range: (Date | undefined)[] | undefined): void {
     if (range && range[0] && range[1]) {
       this.startDate = range[0];
@@ -168,6 +172,7 @@ export class PurchaseOrderListComponent implements OnInit {
     this.updateQueryParams();
   }
 
+  // sort change handler
   onSort(column: string): void {
     if (this.sortColumn === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -178,11 +183,13 @@ export class PurchaseOrderListComponent implements OnInit {
     this.updateQueryParams();
   }
 
+  // page change handler
   onPageChange(page: number): void {
     this.currentPage = page;
     this.updateQueryParams();
   }
 
+  // form reset handler
   resetFilters(): void {
     this.searchTerm = '';
     this.selectedStatus = '';
@@ -193,14 +200,17 @@ export class PurchaseOrderListComponent implements OnInit {
     this.updateQueryParams();
   }
 
+  // navigate to create PO page
   goToPoCreate(): void {
     this.router.navigate(['/po/poCreate']);
   }
 
+  // navigate to edit PO page
   editPo(poId: string): void {
     this.router.navigate(['/po/poEdit', poId]);
   }
 
+  // navigate to delete PO page
   deletePo(poId: string): void {
     if (confirm('Are you sure you want to delete this Purchase Order?')) {
       this.purchaseOrderService.deletePurchaseOrder(poId).subscribe(() => {
