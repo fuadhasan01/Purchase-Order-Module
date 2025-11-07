@@ -203,6 +203,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
             this.purchaseOrderForm.reset();
             this.items.clear();
             this.addItem();
+            this.router.navigate(['/po/poList']);
           },
           error: (err) => {
             console.error('Error creating PO:', err);

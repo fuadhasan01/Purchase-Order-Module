@@ -21,13 +21,12 @@
       "id": "1"
     },
     {
-      "id": "8313",
       "poNumber": "PO-002",
       "supplierId": "1",
       "warehouseId": "2",
-      "shippingAddress": "Dhaka",
+      "shippingAddress": "Dhaka Bangladesh",
       "vatRateId": "2",
-      "orderDate": "2025-11-04",
+      "orderDate": "2025-11-04T00:00:00.000Z",
       "items": [
         {
           "productId": "1",
@@ -37,9 +36,10 @@
         }
       ],
       "memoNotes": "Test Notes",
-      "attachmentFileName": "C:\\fakepath\\Angular Developer Assessment - Purchase Order Module.pdf",
+      "attachmentFileName": "",
       "totalAmount": 220000,
-      "status": "Draft"
+      "status": "Draft",
+      "id": "8313"
     },
     {
       "id": "3",
