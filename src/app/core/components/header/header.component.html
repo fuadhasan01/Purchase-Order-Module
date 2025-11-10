@@ -52,7 +52,9 @@
           </a>
         </li>
         <li class="nav-item mx-1">
-          <span>Pending Count: {{ pendingOrdersCount }}</span>
+          <a class="nav-link fw-semibold" (click)="goToPendingOrders()" style="cursor: pointer">
+            Pending Count: {{ pendingOrdersCount }}
+          </a>
         </li>
       </ul>
 

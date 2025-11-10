@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PurchaseOrderModel } from '../../../features/purchase-order/models/purchase-order.model';
 import { PurchaseOrderService } from '../../../features/purchase-order/services/purchase-order.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,7 @@ export class HeaderComponent implements OnInit {
   purchaseOrders: PurchaseOrderModel[] = [];
   pendingOrdersCount = 0;
 
-  constructor(private purchaseOrderService: PurchaseOrderService) {}
+  constructor(private purchaseOrderService: PurchaseOrderService, private router: Router) {}
 
   ngOnInit(): void {
     this.purchaseOrderService.purchaseOrders$.subscribe((orders) => {
@@ -25,5 +26,11 @@ export class HeaderComponent implements OnInit {
 
   isActive(route: string): boolean {
     return window.location.pathname === route;
+  }
+
+  goToPendingOrders(): void {
+    this.router.navigate(['/po/poList'], {
+      queryParams: { status: 'Pending' },
+    });
   }
 }
