@@ -17,7 +17,7 @@
       ],
       "attachmentFileName": "",
       "totalAmount": 33000,
-      "status": "Draft",
+      "status": "Pending",
       "id": "1"
     },
     {
@@ -38,17 +38,28 @@
       "memoNotes": "Test Notes",
       "attachmentFileName": "",
       "totalAmount": 220000,
-      "status": "Draft",
+      "status": "Pending",
       "id": "8313"
     },
     {
-      "id": "3",
       "poNumber": "PO-003",
       "supplierId": "2",
       "warehouseId": "1",
-      "orderDate": "2025-11-01",
-      "totalAmount": 5000,
-      "status": "Pending"
+      "shippingAddress": "Kishoreganj",
+      "vatRateId": "1",
+      "orderDate": "2025-11-01T00:00:00.000Z",
+      "items": [
+        {
+          "productId": "1",
+          "quantity": 200,
+          "unitPrice": 20,
+          "lineTotal": 4000
+        }
+      ],
+      "attachmentFileName": "",
+      "totalAmount": 4200,
+      "status": "Approved",
+      "id": "3"
     },
     {
       "id": "4",

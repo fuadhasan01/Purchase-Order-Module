@@ -48,13 +48,14 @@ export class PurchaseOrderListComponent implements OnInit {
 
       this.startDate = params['startDate'] ? new Date(params['startDate']) : null;
       this.endDate = params['endDate'] ? new Date(params['endDate']) : null;
-
       this.fetchPurchaseOrders();
     });
   }
 
   fetchPurchaseOrders(): void {
-    this.purchaseOrderService.getPurchaseOrdersWithDetails().subscribe({
+    this.purchaseOrderService.loadPurchaseOrders();
+
+    this.purchaseOrderService.purchaseOrders$.subscribe({
       next: (data) => {
         this.allPurchaseOrders = data;
         this.renderList();
@@ -215,7 +216,6 @@ export class PurchaseOrderListComponent implements OnInit {
     if (confirm('Are you sure you want to delete this Purchase Order?')) {
       this.purchaseOrderService.deletePurchaseOrder(poId).subscribe(() => {
         alert('Purchase Order deleted successfully.');
-        this.fetchPurchaseOrders();
       });
     }
   }

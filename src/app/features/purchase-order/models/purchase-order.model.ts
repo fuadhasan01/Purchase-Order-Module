@@ -7,7 +7,7 @@ export interface PurchaseOrderModel {
   vatRateId: string;
   orderDate: string; // ISO date string
   totalAmount: number;
-  status: 'Draft' | 'Approved' | 'Received';
+  status: 'Draft' | 'Approved' | 'Received' | 'Pending';
   items: PurchaseOrderItemModel[];
   memoNotes?: string;
   attachmentFileName?: string;
