@@ -32,9 +32,9 @@ export class PurchaseOrderService {
       });
   }
 
-  getPurchaseOrders() {
-    return this.httpClient.get<PurchaseOrderModel[]>(this.apiUrl);
-  }
+  // getPurchaseOrders() {
+  //   return this.httpClient.get<PurchaseOrderModel[]>(this.apiUrl);
+  // }
 
   getPurchaseOrdersWithDetails(): Observable<PurchaseOrderListDto[]> {
     return forkJoin({

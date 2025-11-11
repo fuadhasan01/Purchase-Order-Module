@@ -10,14 +10,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  purchaseOrders: PurchaseOrderModel[] = [];
   pendingOrdersCount = 0;
 
   constructor(private purchaseOrderService: PurchaseOrderService, private router: Router) {}
 
   ngOnInit(): void {
     this.purchaseOrderService.purchaseOrders$.subscribe((orders) => {
-      this.purchaseOrders = orders;
+      // this.purchaseOrders = orders;
       this.pendingOrdersCount = orders.filter((po) => po.status === 'Pending').length;
     });
 

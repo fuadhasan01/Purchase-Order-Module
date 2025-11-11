@@ -212,7 +212,6 @@
       "status": "Draft"
     },
     {
-      "id": "7055",
       "poNumber": "Po-50",
       "supplierId": "1",
       "warehouseId": "1",
@@ -236,7 +235,8 @@
       "memoNotes": "Po-50",
       "attachmentFileName": "",
       "totalAmount": 6380,
-      "status": "Draft"
+      "status": "Draft",
+      "id": "7055"
     }
   ],
   "suppliers": [
