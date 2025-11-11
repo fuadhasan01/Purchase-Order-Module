@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
@@ -7,6 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { PurchaseOrderListComponent } from './components/purchase-order-list/purchase-order-list.component';
 import { PurchaseOrderCreateComponent } from './components/purchase-order-create/purchase-order-create.component';
+import { PurchaseOrderService } from './services/purchase-order.service';
 
 const routes: Routes = [
   { path: 'poList', component: PurchaseOrderListComponent },

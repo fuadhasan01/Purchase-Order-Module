@@ -64,6 +64,22 @@ export class PurchaseOrderService {
     );
   }
 
+  updatePurchaseOrder(id: string, poData: any): Observable<any> {
+    return this.httpClient.put(`${this.apiUrl}/${id}`, poData).pipe(
+      tap(() => {
+        this.loadPurchaseOrders();
+      })
+    );
+  }
+
+  deletePurchaseOrder(id: string): Observable<any> {
+    return this.httpClient.delete(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        this.loadPurchaseOrders();
+      })
+    );
+  }
+
   getSuppliers(): Observable<SupplierModel[]> {
     return this.httpClient.get<SupplierModel[]>(this.suppliersUrl);
   }
@@ -82,21 +98,5 @@ export class PurchaseOrderService {
 
   getPurchaseOrderById(id: string): Observable<PurchaseOrderModel> {
     return this.httpClient.get<PurchaseOrderModel>(`${this.apiUrl}/${id}`);
-  }
-
-  updatePurchaseOrder(id: string, poData: any): Observable<any> {
-    return this.httpClient.put(`${this.apiUrl}/${id}`, poData).pipe(
-      tap(() => {
-        this.loadPurchaseOrders();
-      })
-    );
-  }
-
-  deletePurchaseOrder(id: string): Observable<any> {
-    return this.httpClient.delete(`${this.apiUrl}/${id}`).pipe(
-      tap(() => {
-        this.loadPurchaseOrders();
-      })
-    );
   }
 }
